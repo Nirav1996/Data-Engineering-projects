@@ -1,4 +1,4 @@
-# Earthquake Azure Data Engineering Pipeline: A Comprehensive Guide
+# Earthquake Data Engineering Pipeline: A Comprehensive Guide
 
 ## Overview and Architecture
 
@@ -10,11 +10,10 @@ Earthquake data is incredibly valuable for understanding seismic events and miti
 
 This pipeline follows a modular architecture, integrating Azure’s powerful data engineering tools to ensure scalability, reliability, and efficiency. The architecture includes:
 
-1. **Data Ingestion**: Azure Data Factory orchestrates the daily ingestion of earthquake data from the USGS Earthquake API.
+1. **Data Ingestion**: Databricks pipeline orchestrates the daily ingestion of earthquake data from the USGS Earthquake API.
 2. **Data Processing**: Databricks processes raw data into structured formats (bronze, silver, gold tiers).
 3. **Data Storage**: Azure Data Lake Storage serves as the backbone for storing and managing data at different stages.
-4. **Data Analysis**: Synapse Analytics enables querying and aggregating data for reporting.
-5. **Optional Visualization**: Power BI can be used to create interactive dashboards for stakeholders.
+
 
 ### Data Modeling
 
@@ -103,58 +102,4 @@ We implement a **medallion architecture** to structure and organize data effecti
 
 ---
 
-## Step 8: Set Up Azure Data Factory (ADF)
-1. Create a new Azure Data Factory instance (in a new Resource Group if needed).
-2. Launch the ADF studio and create a pipeline:
-   - Drag the **Notebook** activity into the pipeline and configure it to run Databricks notebooks.
-   - Add a **Databricks Linked Service**:
-     - Use the **AutoResolveIntegrationRuntime**.
-     - Authenticate with an Access Token (recommended to store the token in a Key Vault for security).
-3. Pass parameters to the pipeline:
-   - For example, add parameters `start_date` and `end_date` with dynamic values using `@formatDateTime` expressions.
-4. Chain notebooks (`bronze`, `silver`, `gold`) to create a pipeline with success dependencies.
-5. Validate, publish, and run the pipeline.
-6. Schedule the pipeline to run at desired intervals (e.g., daily).
 
----
-
-## Step 9: Integrate Azure Synapse Analytics
-1. **Create a Synapse Workspace**:
-   - Link it to the existing Storage Account.
-   - Configure a file system and assign necessary permissions.
-2. **Query Data Using Serverless SQL**:
-   - Use `OPENROWSET` to query Parquet files stored in `bronze`, `silver`, and `gold` containers.
-   - Example query:
-     ```sql
-     SELECT
-         country_code,
-         COUNT(CASE WHEN LOWER(sig_class) = 'low' THEN 1 END) AS low_count,
-         COUNT(CASE WHEN LOWER(sig_class) IN ('medium', 'moderate') THEN 1 END) AS medium_count,
-         COUNT(CASE WHEN LOWER(sig_class) = 'high' THEN 1 END) AS high_count
-     FROM
-         OPENROWSET(
-             BULK 'https://<storage_account>.dfs.core.windows.net/gold/earthquake_events_gold/**',
-             FORMAT = 'PARQUET'
-         ) AS [result]
-     GROUP BY
-         country_code;
-     ```
-3. **Create External Tables** for structured access:
-   - Define external tables linked to the `gold` container for better organization and performance.
-4. **Optimize Performance**:
-   - Use indexing, partitioning, and caching as required.
-
----
-
-## Step 10: Visualization Options
-1. While Power BI can be used, it is not ideal for Mac users. Instead, consider using Synapse SQL for analytics and queries.
-2. Export data for further visualization or reporting if needed.
-
----
-
-## Key Considerations
-- **Linked Services**: Ensure reusable and secure connections between Azure services.
-- **Scalability**: Use Synapse for querying large datasets efficiently.
-- **Data Engineering Focus**: Maintain an emphasis on structured pipelines and optimized workflows.
-
-This guide provides a comprehensive approach to setting up a professional-grade Azure Databricks and Synapse workflow for data engineering.
