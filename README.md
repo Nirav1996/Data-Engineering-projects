@@ -78,9 +78,8 @@ We implement a **medallion architecture** to structure and organize data effecti
 
 ## Step 5: Create and Execute Notebooks
 1. In the Databricks workspace, create a notebook for each layer (`bronze`, `silver`, `gold`).
-   - Add the relevant code for `bronze` from GitHub.
-   - Execute the notebook and refresh the Storage Account containers to verify updates.
-   - Repeat the process for `silver` and `gold` notebooks, adding the corresponding code.
+   Execute the notebook and refresh the Storage Account containers to verify updates.
+   
 
 ---
 
