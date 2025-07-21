@@ -104,6 +104,6 @@ We implement a **medallion architecture** to structure and organize data effecti
 ---
 ## Step 8: Create Pipeline in Databricks.
 1. As shown under,pipeline is created to automate execution of bronze,silver and gold notebooks in sequence.
-   ![Databricks_pipeline](Databricks_pipeline.png)
+   ![Databricks_pipeline] (Databricks_Pipeline.png)
    
 
